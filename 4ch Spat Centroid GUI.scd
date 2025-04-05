@@ -1,4 +1,3 @@
-// Initialize server with 4 outputs
 s.options.numOutputBusChannels = 4;
 s.options.numInputBusChannels = 4;
 Server.local.options.memSize = 131072*10;
@@ -15,7 +14,6 @@ s.reboot;
 ~originalPanRates = [];
 )
 
-// SynthDef con reverse espacial correcto
 (
 SynthDef(\trackPlayer, {
     |out=0, buf, rate=1, panRate=1, direction=1, type=0, mute=0, volume=1, gate=1,
@@ -52,7 +50,7 @@ SynthDef(\trackPlayer, {
     Out.ar(out, panned);
 }).add;
 
-// Sistema de espacialización espectral con ping-pong y delays envolventes para efectos globales
+// Sistema de espacialización espectral ping-pong delay y envolventes para efectos globales
 SynthDef(\pingPongCentroideDelay, {
     |inBus = 0, outBus = 0, fftSize = 1024, rate = 3, amp = 0.5,
     delayTime = 0.3, feedback = 0.8, centroidScale = 15, lagTime = 0.1, wet = 0.5|
@@ -73,7 +71,6 @@ SynthDef(\pingPongCentroideDelay, {
         phase: Rand(0, 2pi)
     ).range(-1, 1);
 
-    // Sistema de delay espacializado con modulación aplicada
     dry = in * amp;
 
     // Modular el tiempo de delay con el centroide espectral
@@ -96,7 +93,6 @@ SynthDef(\pingPongCentroideDelay, {
         level: 1
     );
 
-    // Mezcla controlada por parámetro wet
     spatialSignal = XFade2.ar(dry, delayed, wet * 2 - 1);
 
     // Salida final
@@ -106,8 +102,7 @@ SynthDef(\pingPongCentroideDelay, {
 
 // Inicialización del sistema
 (
-~folder = PathName.new("/Users/aaronescobar/Music/Reaper/Disco/Axioma/Stems2/");
-//~folder = PathName.new("/Users/aaronescobar/Music/Reaper/Disco/Soma/Media/");
+~folder = PathName.new("/.../.../");
 
 ~dataBase = [];
 ~synths = [];
@@ -229,7 +224,6 @@ SynthDef(\pingPongCentroideDelay, {
         .font_(Font("Helvetica", 14).bold)
         .stringColor_(Color.white);
 
-    // Botón de activación global
     Button(effectsSection, Rect(10, 40, 100, 25))
         .states_([
             ["GLOBAL OFF", Color.white, Color.red(0.5)],
@@ -295,7 +289,6 @@ SynthDef(\pingPongCentroideDelay, {
             if(~effectActive) { ~spatialProcessor.set(\amp, ~effectParams.amp) };
         });
 
-    // Control de delay time global
     StaticText(effectsSection, Rect(650, 70, 70, 20)).string_("DELAY").stringColor_(Color.white);
     Slider(effectsSection, Rect(730, 70, 150, 20))
         .value_(~effectParams.delayTime.linlin(0.05, 1.5, 0, 1))
@@ -371,7 +364,6 @@ SynthDef(\pingPongCentroideDelay, {
                 ~handleSolo.value(i, b.value);
             });
 
-        // FADER RATE MÁS ANCHO (180px)
         StaticText(trackView, Rect(500, 5, 70, 20)).string_("FREQ RATE");
         Slider(trackView, Rect(580, 5, 150, 20))
             .value_(linlin(synthData[1], 0.89, 1.12, 0, 1))
@@ -388,7 +380,6 @@ SynthDef(\pingPongCentroideDelay, {
                 ~updateSynth.value(i);
             });
 
-        // FADER PAN RATE MÁS ANCHO (150px)
         StaticText(trackView, Rect(500, 30, 70, 20)).string_("PAN RATE");
         Slider(trackView, Rect(580, 30, 150, 20))
             .value_((synthData[2] - 0.1) / (5 - 0.1))
@@ -405,7 +396,6 @@ SynthDef(\pingPongCentroideDelay, {
                 ~updateSynth.value(i);
             });
 
-        // Botón de activación de DELAY (posicionado debajo del botón random)
         Button(trackView, Rect(780, 40, 80, 20))
             .states_([
                 ["DELAY", Color.black, Color.gray(0.8)],
@@ -417,7 +407,6 @@ SynthDef(\pingPongCentroideDelay, {
                 ~updateSynth.value(i);
             });
 
-        // Controles de delay por canal
         StaticText(trackView, Rect(870, 40, 40, 20)).string_("WET");
         Slider(trackView, Rect(910, 40, 50, 20))
             .value_(synthData[12])
